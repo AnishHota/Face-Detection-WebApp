@@ -1,7 +1,10 @@
 const enableWebcamButton = document.getElementById('webcamButton');
 const video = document.getElementById('webcam');
-const canvas = document.getElementById('canvas');
-let ctx = canvas.getContext("2d");
+//Only use the below two elements if you want to use canvas
+//to draw or show the facial detection below the real video.
+// const canvas = document.getElementById('canvas');
+// let ctx = canvas.getContext("2d");
+const liveView = document.getElementById('liveView');
 
 //Check if webcam access is supported
 function getUserMediaSupported(){
@@ -22,6 +25,9 @@ function enableCam(event){
          return;
     }
 
+    //Hide the button once clicked.
+    enableWebcamButton.setAttribute('class','removed');
+    
     navigator.mediaDevices.getUserMedia({
         video: {width: 600, height: 400},
         audio: false
@@ -32,33 +38,50 @@ function enableCam(event){
     });
 }
 
+var children=[]
+
 async function predictWebcam(){
     const prediction = await model.estimateFaces(video,false);
-        // console.log(predictions);
+    //Below commented code uses canvas to draw facial detection.  
+    // ctx.drawImage(video,0,0,600,400);
 
-        //TODO: Rather than copying the video to a canvas
-        // better to draw over the livevideo
-        // Refer to the obj det code.
-    ctx.drawImage(video,0,0,600,400);
+    // prediction.forEach((pred) => {
+    //     ctx.beginPath();
+    //     ctx.lineWidth = "4";
+    //     ctx.strokeStyle = "blue";
+    //     ctx.rect(
+    //         pred.topLeft[0],
+    //         pred.topLeft[1],
+    //         pred.bottomRight[0]-pred.topLeft[0],
+    //         pred.bottomRight[1]-pred.topLeft[1]
+    //     );
+    //     ctx.stroke();
 
-    prediction.forEach((pred) => {
-        ctx.beginPath();
-        ctx.lineWidth = "4";
-        ctx.strokeStyle = "blue";
-        ctx.rect(
-            pred.topLeft[0],
-            pred.topLeft[1],
-            pred.bottomRight[0]-pred.topLeft[0],
-            pred.bottomRight[1]-pred.topLeft[1]
-        );
-        ctx.stroke();
+    //     ctx.fillStyle = "red";
+    //     pred.landmarks.forEach(landmark =>{
+    //        ctx.fillRect(landmark[0],landmark[1],5,5); 
+    //     })
+    // });
+    for(let i=0;i<children.length;i++) 
+    {
+        liveView.removeChild(children[i]);
+    }
+    children.splice(0);
 
-        ctx.fillStyle = "red";
-        pred.landmarks.forEach(landmark =>{
-           ctx.fillRect(landmark[0],landmark[1],5,5); 
-        })
-    });
+    for(let n=0;n<prediction.length;n++)
+    {
+        const faceBox = document.createElement('div');
 
+        faceBox.setAttribute('class','faceBox');
+        faceBox.style='left: '+prediction[n].topLeft[0]+'px; top:'
+        +prediction[n].topLeft[1]+'px; width:'
+        +(prediction[n].bottomRight[0]-prediction[n].topLeft[0])+'px; height:'
+        +(prediction[n].bottomRight[1]-prediction[n].topLeft[1])+'px;';
+
+        liveView.appendChild(faceBox);
+        children.push(faceBox);
+    }
+    
     window.requestAnimationFrame(predictWebcam);
 }
 

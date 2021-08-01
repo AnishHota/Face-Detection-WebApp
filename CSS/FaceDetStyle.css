@@ -1,0 +1,18 @@
+
+video {
+    display:block;
+}
+
+.camView {
+    position: relative;  
+}
+
+.faceBox{
+    border: 4px dashed rgba(102, 5, 212, 0.876);
+    z-index: 1;
+    position: absolute;
+}
+
+.removed{
+    display: none;
+}

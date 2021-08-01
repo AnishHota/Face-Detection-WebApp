@@ -9,8 +9,11 @@
   <body>
       <h1>Face Detection using tf.js model</h1>
       <button id="webcamButton"> Enable Webcam</button> 
-      <video id="webcam" autoplay></video>
-      <canvas id="canvas" width="600px" height="400px"></canvas>
+      <div id='liveView' class="camView">
+        <video id="webcam" autoplay></video>
+      </div>
+      <!-- Only use if you want to use canvas to draw the facial detection. 
+        <canvas id="canvas" width="600px" height="400px"></canvas> -->
   </body>
 
   <!-- Loading all the scripts -->
