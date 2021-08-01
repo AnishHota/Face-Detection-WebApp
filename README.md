@@ -1,6 +1,5 @@
 # Face-Detection-WebApp
-Real time face and facial landmarks detection in a live environment.
+Real time face detection in a live environment.
 
-Next steps:
+TODO:
 - To be deployed in a website. Live demo to be included
-- Draw the rectange over the live video rather than using a canvas, removing redundancy.
